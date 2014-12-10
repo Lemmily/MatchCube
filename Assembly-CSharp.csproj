@@ -46,7 +46,6 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Resources\Scripts\Board.cs" />
      <Compile Include="Assets\Resources\Scripts\BoardManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Cube.cs" />
      <Compile Include="Assets\Resources\Scripts\Feeler.cs" />

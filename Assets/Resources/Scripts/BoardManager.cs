@@ -8,12 +8,12 @@ public class BoardManager : MonoBehaviour {
 	public int CubeSize = 5;
 	
 	public GameObject cubePrefab;
-	public GameObject boardPrefab;
+//	public GameObject boardPrefab;
 	public GameObject playerPrefab;
 	
 	public Bounds _bounds;
 	
-	public List<Board> boards;
+//	public List<Board> boards;
 	public List<Cube> cubesList;
 	public Cube[,,] cubes;
 	
@@ -44,7 +44,6 @@ public class BoardManager : MonoBehaviour {
 		_bounds = transform.parent.renderer.bounds;
 		print (_bounds);
 		CreateCubes(CubeSize);
-//		CreateBoards(CubeSize);
 		PutPlayer((CubeSize-1)/2, CubeSize-1, (CubeSize-1)/2);
 		print (_bounds);	
 		transform.localPosition = new Vector3(-CubeSize/2 +0.5f, -CubeSize/2 + 0.5f, -CubeSize/2 + 0.5f);
@@ -71,20 +70,14 @@ public class BoardManager : MonoBehaviour {
 					}
 				}
 				for(int i = 0; i < toDestroy.Count; i++) {
-					Destroy(toDestroy[i].gameObject, 0.5f);
-					cubesList.Remove(cubesList[i]);
+					Destroy(toDestroy[i].gameObject, 0.25f);
+					cubesList.Remove(toDestroy[i]);
 				}
 				isMatched = false;
-	//			if (_matchTimeOut <= 0){
-	//				_matchTimeOut = 0f;
-	//				isMatched = false;
-	//			} else {
-	//				_matchTimeOut -= Time.deltaTime;
-	//			}
 			}
 			else if(isMoving && cube != null) {
-				if(player.transform.position == cubePos &&
-				   cube.transform.position == playerPos) {
+				if(player.transform.localPosition == cubePos &&
+				   cube.transform.localPosition == playerPos) {
 					
 					isMoving = false;
 					
@@ -97,10 +90,10 @@ public class BoardManager : MonoBehaviour {
 					MoveCube(player, cubePos, playerPos);
 					MoveCube(cube, playerPos, cubePos);
 					
-					if(Vector3.Distance(player.transform.position, cubePos) < 0.1f ||
-					   Vector3.Distance(cube.transform.position, playerPos) < 0.1f) {
-						player.transform.position = cubePos;
-						cube.transform.position = playerPos;
+					if(Vector3.Distance(player.transform.localPosition, cubePos) < 0.1f ||
+					   Vector3.Distance(cube.transform.localPosition, playerPos) < 0.1f) {
+						player.transform.localPosition = cubePos;
+						cube.transform.localPosition = playerPos;
 					}	
 				}
 			}
@@ -112,36 +105,6 @@ public class BoardManager : MonoBehaviour {
 	}
 	
 	
-	void CreateBoards (int num)
-	{
-		var boardSize = CubeSize*2f;
-		for(int x = 0; x < num; x++){
-			GameObject g = Instantiate(boardPrefab, new Vector3(x, 0, 0), Quaternion.identity) as GameObject;
-			g.transform.parent = gameObject.transform;
-			g.transform.localPosition = new Vector3(x,0,0);
-			var col = g.GetComponent<BoxCollider>();
-				col.size = new Vector3(0.5f,boardSize,boardSize);
-			boards.Add(g.GetComponent<Board>());
-		}
-		for(int y = 0; y < num; y++){
-			
-			GameObject g = Instantiate(boardPrefab, new Vector3(0, y, 0), Quaternion.identity) as GameObject;
-			g.transform.parent = gameObject.transform;
-			g.transform.localPosition = new Vector3(0,y,0);
-			var col = g.GetComponent<BoxCollider>();
-				col.size = new Vector3(boardSize,0.5f,boardSize);
-			boards.Add(g.GetComponent<Board>());
-		}
-		for(int z = 0; z < num; z++){
-			
-			GameObject g = Instantiate(boardPrefab, new Vector3(0, 0, z), Quaternion.identity) as GameObject;
-			g.transform.parent = gameObject.transform;
-			g.transform.localPosition = new Vector3(0,0,z);
-			var col = g.GetComponent<BoxCollider>();
-			col.size = new Vector3(boardSize,boardSize,0.5f);
-			boards.Add(g.GetComponent<Board>());
-		}
-	}
 
 	void CreateCubes (int num)
 	{
@@ -231,27 +194,20 @@ public class BoardManager : MonoBehaviour {
 		if(rows.Count >= MatchNum) {
 			for (int i = 0; i < rows.Count; i++) {
 				rows[i].isMatched = true;
-//				Destroy (rows[i].gameObject, 1f);
 			}
 			isMatched = true;
-//			_matchTimeOut = 1.1f;
 		}
 		if(columns.Count >= MatchNum) {
 			for (int i = 0; i < columns.Count; i++) {
 				columns[i].isMatched = true;
-//				Destroy (columns[i].gameObject, 1f);
 			}
 			isMatched = true;
-//			_matchTimeOut = 1.1f;
 		}
 		if(alongs.Count >= MatchNum) {
 			for (int i = 0; i < alongs.Count; i++) {
 				alongs[i].isMatched = true;
-//				Destroy (alongs[i].gameObject, 1f);
-//			_matchTimeOut = 1.1f;
 			}
 			isMatched = true;
-//			_matchTimeOut = 1.1f;
 		}
 	}
 
@@ -264,14 +220,14 @@ public class BoardManager : MonoBehaviour {
 		float fracComplete = (t - startTime) / SwapRate;
 		
 		Vector3 tmp = Vector3.Lerp (riseRelCenter, setRelCenter, fracComplete);
-		cube.transform.position = tmp;
-		cube.transform.position += center;
+		cube.transform.localPosition = tmp;
+		cube.transform.localPosition += center;
 	}
 	
 	public void SwapCubes(Cube player, Cube c) {
 		if ( ! isMoving && ! isRotating) {
-			playerPos = player.transform.position;
-			cubePos = c.transform.position;
+			playerPos = player.transform.localPosition;
+			cubePos = c.transform.localPosition;
 			cube = c;
 			startTime = Time.time;
 			isMoving = true;
@@ -282,8 +238,35 @@ public class BoardManager : MonoBehaviour {
 		if(player.Neighbours.Contains (c) ) {
 			SwapCubes(player, c);
 		}
-//		if (player.Neighbour.ContainsValue(c)) {
-//			SwapCubes(player, c);
-//		}
 	}
 }
+//	void CreateBoards (int num)
+//	{
+//		var boardSize = CubeSize*2f;
+//		for(int x = 0; x < num; x++){
+//			GameObject g = Instantiate(boardPrefab, new Vector3(x, 0, 0), Quaternion.identity) as GameObject;
+//			g.transform.parent = gameObject.transform;
+//			g.transform.localPosition = new Vector3(x,0,0);
+//			var col = g.GetComponent<BoxCollider>();
+//				col.size = new Vector3(0.5f,boardSize,boardSize);
+//			boards.Add(g.GetComponent<Board>());
+//		}
+//		for(int y = 0; y < num; y++){
+//			
+//			GameObject g = Instantiate(boardPrefab, new Vector3(0, y, 0), Quaternion.identity) as GameObject;
+//			g.transform.parent = gameObject.transform;
+//			g.transform.localPosition = new Vector3(0,y,0);
+//			var col = g.GetComponent<BoxCollider>();
+//				col.size = new Vector3(boardSize,0.5f,boardSize);
+//			boards.Add(g.GetComponent<Board>());
+//		}
+//		for(int z = 0; z < num; z++){
+//			
+//			GameObject g = Instantiate(boardPrefab, new Vector3(0, 0, z), Quaternion.identity) as GameObject;
+//			g.transform.parent = gameObject.transform;
+//			g.transform.localPosition = new Vector3(0,0,z);
+//			var col = g.GetComponent<BoxCollider>();
+//			col.size = new Vector3(boardSize,boardSize,0.5f);
+//			boards.Add(g.GetComponent<Board>());
+//		}
+//	}

@@ -10,8 +10,8 @@ public class Cube : MonoBehaviour {
 	public bool isMoving;
 	
 	
-	public Dictionary<Direction, Cube> Neighbour = new Dictionary<Direction, Cube>();
-	public Dictionary<Cube, Direction> RevNeighbour = new Dictionary<Cube, Direction>();
+//	public Dictionary<Direction, Cube> Neighbour = new Dictionary<Direction, Cube>();
+//	public Dictionary<Cube, Direction> RevNeighbour = new Dictionary<Cube, Direction>();
 	
 	public List<Cube> Neighbours = new List<Cube>();
 	
@@ -19,17 +19,17 @@ public class Cube : MonoBehaviour {
 	
 	public int XCoord {
 		get {
-			return Mathf.FloorToInt(transform.localPosition.x);
+			return Mathf.RoundToInt(transform.localPosition.x);
 		}
 	}
 	public int YCoord {
 		get {
-			return Mathf.FloorToInt(transform.localPosition.y);
+			return Mathf.RoundToInt(transform.localPosition.y);
 		}
 	}
 	public int ZCoord {
 		get {
-			return Mathf.FloorToInt(transform.localPosition.z);
+			return Mathf.RoundToInt(transform.localPosition.z);
 		}
 	}
 	
@@ -60,7 +60,7 @@ public class Cube : MonoBehaviour {
 	
 	
 	
-	public void AddCube (Cube t, Direction d)
+	public void AddCube (Cube t) //, Direction d)
 	{	
 		if( ! Neighbours.Contains(t)){
 			Neighbours.Add (t);
